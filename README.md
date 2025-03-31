@@ -13,7 +13,7 @@ O script do Teste 3 está presente no arquivo `teste3.sql`. Para executá-lo:
 1. Abra um terminal na pasta `teste3`.
 2. Execute o seguinte comando:
    ```sh
-   mysql --local-infile=1 -u root -p < teste3.sql
+   mysql --local-infile=1 -u <seu_usuario> -p < teste3.sql
    ```
 
 > **Observação:** O script deve ser executado em um terminal Linux, pois o MySQL possui melhor suporte nesse ambiente.
