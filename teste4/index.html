@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Busca de Operadoras</title>
-  <!-- Importa Vue.js e Axios via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; text-align: center; }
+    input, button { margin: 10px; padding: 10px; font-size: 16px; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 10px; border-bottom: 1px solid #ccc; }
+  </style>
 </head>
 <body>
   <div id="app">
     <h1>Busca de Operadoras</h1>
-    <input type="text" v-model="query" placeholder="Digite sua busca">
+    <input type="text" v-model="query" placeholder="Digite sua busca" @input="debouncedSearch">
     <button @click="search">Buscar</button>
+
+    <div v-if="loading">Carregando...</div>
 
     <div v-if="results.length">
       <h2>Resultados:</h2>
@@ -21,32 +29,56 @@
         </li>
       </ul>
     </div>
-    <div v-else>
+    <div v-else-if="!loading && query.length > 0">
       <p>Nenhum resultado encontrado.</p>
     </div>
   </div>
 
   <script>
-    new Vue({
-      el: '#app',
-      data: {
-        query: '',
-        results: []
-      },
-      methods: {
-        search() {
+    const { createApp, ref } = Vue;
+
+    createApp({
+      setup() {
+        const query = ref('');
+        const results = ref([]);
+        const loading = ref(false);
+        let abortController = null;
+        let timeout = null;
+
+        const search = () => {
+          if (query.value.trim() === '') {
+            results.value = [];
+            return;
+          }
+
+          if (abortController) abortController.abort();
+          abortController = new AbortController();
+
+          loading.value = true;
+
           axios.get('https://intuitive-care-py.onrender.com/search', {
-            params: { q: this.query }
+            params: { q: query.value },
+            signal: abortController.signal
           })
           .then(response => {
-            this.results = response.data;
+            results.value = response.data;
           })
           .catch(error => {
-            console.error("Erro na busca:", error);
+            if (!axios.isCancel(error)) console.error("Erro na busca:", error);
+          })
+          .finally(() => {
+            loading.value = false;
           });
-        }
+        };
+
+        const debouncedSearch = () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(search, 500);
+        };
+
+        return { query, results, loading, search, debouncedSearch };
       }
-    });
+    }).mount('#app');
   </script>
 </body>
 </html>
