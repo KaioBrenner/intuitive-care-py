@@ -19,7 +19,7 @@ O script do Teste 3 está presente no arquivo `teste3.sql`. Para executá-lo:
 > **Observação:** O script deve ser executado em um terminal Linux, pois o MySQL possui melhor suporte nesse ambiente.
 
 ### Teste 4
-O serviço backend está presente no arquivo `app.py` e está hospedado na **Vercel**. Sendo assim, é necessário apenas rodar o frontend presente no arquivo `index.html`.
+O serviço backend está presente no arquivo `app.py` e está hospedado no **Render**. Sendo assim, é necessário apenas rodar o frontend presente no arquivo `index.html`.
 
 Para executar o Teste 4:
 
