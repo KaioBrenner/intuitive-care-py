@@ -28,7 +28,7 @@ def remover_duplicatas(tabelas):
 
 def salvar_em_csv(dados, nome_arquivo):
     with open(nome_arquivo, "w", newline="", encoding="utf-8-sig") as f:
-        writer = csv.writer(f, delimiter=';')  # Usando ponto e vírgula como delimitador
+        writer = csv.writer(f, delimiter=';')
         writer.writerows(dados)
 
 def substituir_od_amb(dados):
@@ -50,10 +50,8 @@ if __name__ == "__main__":
     tabelas_filtradas = remover_duplicatas(tabelas)
     tabelas_modificadas = substituir_od_amb(tabelas_filtradas)
 
-    # Salvando a tabela filtrada no arquivo CSV
     salvar_em_csv(tabelas_modificadas, CSV_FILE)
     print(f"Tabela salva com sucesso em '{CSV_FILE}'")
 
-    # Compactando o arquivo CSV
     compactar_arquivo(CSV_FILE, ZIP_FILE)
     print(f"Arquivo compactado com sucesso em '{ZIP_FILE}'")
