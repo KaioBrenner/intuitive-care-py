@@ -1,23 +1,10 @@
--- ============================================================================
---  teste3_com_empresas.sql
---  Script para criar tabelas, importar arquivos CSV de despesas e de empresas,
---  criar uma view unificada e executar queries analíticas que mostram as 10 
---  operadoras com maiores despesas (último trimestre e último ano) incluindo
---  Razão Social e CNPJ (join via reg_ans).
---
---  Para funcionar:
---    1. Estar na pasta 'teste3' com as subpastas '2023', '2024' e o arquivo 
---       'Relatorio_cadop.csv'
---    2. Rodar: mysql --local-infile=1 -u USUARIO -p < teste3_com_empresas.sql
--- ============================================================================
- 
--- 1) Cria o banco de dados (caso não exista) e seleciona
+
 CREATE DATABASE IF NOT EXISTS teste3;
 USE teste3;
 
--- Tabelas e importação dos arquivos CSV de despesas (2023 e 2024)
+SET GLOBAL local_infile = 1;
 
--- Tabela para 1T2023.csv -> t1_2023
+
 DROP TABLE IF EXISTS t1_2023;
 CREATE TABLE t1_2023 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,7 +30,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 2T2023.csv -> t2_2023
 DROP TABLE IF EXISTS t2_2023;
 CREATE TABLE t2_2023 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,7 +55,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 3T2023.csv -> t3_2023
 DROP TABLE IF EXISTS t3_2023;
 CREATE TABLE t3_2023 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,7 +80,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 4T2023.csv -> t4_2023
 DROP TABLE IF EXISTS t4_2023;
 CREATE TABLE t4_2023 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -121,9 +105,7 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabelas e importação dos arquivos CSV de 2024
 
--- Tabela para 1T2024.csv -> t1_2024
 DROP TABLE IF EXISTS t1_2024;
 CREATE TABLE t1_2024 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -149,7 +131,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 2T2024.csv -> t2_2024
 DROP TABLE IF EXISTS t2_2024;
 CREATE TABLE t2_2024 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -175,7 +156,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 3T2024.csv -> t3_2024
 DROP TABLE IF EXISTS t3_2024;
 CREATE TABLE t3_2024 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -201,7 +181,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela para 4T2024.csv -> t4_2024
 DROP TABLE IF EXISTS t4_2024;
 CREATE TABLE t4_2024 (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -227,7 +206,6 @@ SET
   vl_saldo_inicial = CAST(@vl_saldo_inicial AS DECIMAL(15,2)),
   vl_saldo_final = CAST(@vl_saldo_final AS DECIMAL(15,2));
 
--- Tabela e importação do arquivo de empresas
 
 DROP TABLE IF EXISTS empresas;
 CREATE TABLE empresas (
@@ -243,7 +221,6 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (reg_ans, cnpj, razao_social);
 
--- Criação da view unificada "all_data"
 
 DROP VIEW IF EXISTS all_data;
 CREATE VIEW all_data AS
@@ -263,10 +240,11 @@ CREATE VIEW all_data AS
   UNION ALL
   SELECT * FROM t4_2024;
 
--- Queries analíticas com join na tabela de empresas
 
--- 3.5.1 Query para as 10 operadoras com maiores despesas na categoria no último trimestre
--- (Filtro relativo: últimos 3 meses a partir de CURDATE())
+-- O ideal seria utilizar uma consulta baseada em datas dinâmicas para garantir flexibilidade.
+-- No entanto, devido à limitação de dados disponíveis, foi necessário definir um valor fixo, 
+-- utilizando "a.data >= '2024-10-01'" para representar o último trimestre.
+
 SELECT '### TOP 10 OPERADORAS - ÚLTIMO TRIMESTRE ###' AS titulo;
 
 SELECT 
@@ -296,6 +274,7 @@ WHERE a.descricao LIKE 'EVENTOS/ SINISTROS CONHECIDOS OU AVISADOS  DE ASSISTÊNC
 GROUP BY e.reg_ans, e.razao_social, e.cnpj
 ORDER BY total_despesas DESC
 LIMIT 10;
--- Mensagem final
+
+
 SELECT 'Importação e análises finalizadas!' AS msg;
 
