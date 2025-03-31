@@ -1,9 +1,32 @@
-Passos para rodar os testes
+# Executando os Testes
 
-1- Teste 1 e 2 dever ser executado no pycharm
+Cada um dos testes está localizado em pastas com seus respectivos nomes.
 
-2-  Script do teste 3 presente no arquivo teste3.sql
-    Para executar o script do teste 3 será necessário abrir um terminal na pasta "teste3". 
-    rodar o comando "mysql --local-infile=1 -u root -p < teste3.sql"
-    
-3- Para executar o teste 4 é necessário rodar o index.html.
+## Passos para Rodar os Testes
+
+### Teste 1 e Teste 2
+Os Testes 1 e 2 devem ser executados no **PyCharm**.
+
+### Teste 3
+O script do Teste 3 está presente no arquivo `teste3.sql`. Para executá-lo:
+
+1. Abra um terminal na pasta `teste3`.
+2. Execute o seguinte comando:
+   ```sh
+   mysql --local-infile=1 -u root -p < teste3.sql
+   ```
+
+> **Observação:** O script deve ser executado em um terminal Linux, pois o MySQL possui melhor suporte nesse ambiente.
+
+### Teste 4
+O serviço backend está presente no arquivo `app.py` e está hospedado na **Vercel**. Sendo assim, é necessário apenas rodar o frontend presente no arquivo `index.html`.
+
+Para executar o Teste 4:
+
+1. Abra o arquivo `index.html` em um navegador.
+2. Insira o texto de busca no campo de entrada.
+3. Clique no botão **"Buscar"** para iniciar a busca.
+
+## Postman
+A coleção do **Postman** está disponível no arquivo `BuscaOperadoras.json`.
+
