@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Busca de Operadoras</title>
+  <!-- Importa Vue.js e Axios via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Busca de Operadoras</h1>
+    <input type="text" v-model="query" placeholder="Digite sua busca">
+    <button @click="search">Buscar</button>
+
+    <div v-if="results.length">
+      <h2>Resultados:</h2>
+      <ul>
+        <li v-for="item in results" :key="item.Registro_ANS">
+          <strong>{{ item.Razao_Social }}</strong> - {{ item.Modalidade }} - {{ item.Cidade }}/{{ item.UF }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>Nenhum resultado encontrado.</p>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        query: '',
+        results: []
+      },
+      methods: {
+        search() {
+          axios.get('http://localhost:5000/search', {
+            params: { q: this.query }
+          })
+          .then(response => {
+            this.results = response.data;
+          })
+          .catch(error => {
+            console.error("Erro na busca:", error);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
