@@ -35,7 +35,7 @@
       },
       methods: {
         search() {
-          axios.get('http://localhost:5000/search', {
+          axios.get('https://intuitive-care-py.onrender.com/search', {
             params: { q: this.query }
           })
           .then(response => {
